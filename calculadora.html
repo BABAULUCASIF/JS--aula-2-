@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Calculadora Simples</title>
+  <style>
+    input[type="button"] {
+      width: 40px;
+      height: 40px;
+      margin: 2px;
+    }
+    input[type="text"] {
+      width: 170px;
+      height: 30px;
+      margin-bottom: 5px;
+    }
+  </style>
+  <script>
+    let numero1 = "", numero2 = "";
+    let operador = "";
+    let ponto1 = false, ponto2 = false;
+    let operando = 1;
+
+    window.onload = () => {
+      const mostrar = document.getElementById("mostra");
+
+      const botoes = {
+        numeros: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"],
+        operadores: {
+          soma: "+",
+          subtracao: "-",
+          multiplicacao: "*",
+          divisao: "/"
+        }
+      };
+
+      botoes.numeros.forEach(num => {
+        document.getElementById(`btn-${num}`).addEventListener("click", () => inserirNumero(num));
+      });
+
+      document.getElementById("btn-ponto").addEventListener("click", inserirPonto);
+
+      for (const [id, op] of Object.entries(botoes.operadores)) {
+        document.getElementById(`btn-${id}`).addEventListener("click", () => definirOperador(op));
+      }
+
+      document.getElementById("btn-clear").addEventListener("click", limpar);
+      document.getElementById("btn-resultado").addEventListener("click", calcular);
+
+      function inserirNumero(num) {
+        if (operando === 1) {
+          numero1 += num;
+        } else {
+          numero2 += num;
+        }
+        atualizarTela();
+      }
+
+      function inserirPonto() {
+        if (operando === 1 && !ponto1) {
+          numero1 += ".";
+          ponto1 = true;
+        } else if (operando === 2 && !ponto2) {
+          numero2 += ".";
+          ponto2 = true;
+        }
+        atualizarTela();
+      }
+
+      function definirOperador(op) {
+        if (numero1 === "") return;
+        operador = op;
+        operando = 2;
+        atualizarTela();
+      }
+
+      function calcular() {
+        if (numero1 === "" || numero2 === "" || operador === "") return;
+        const n1 = parseFloat(numero1);
+        const n2 = parseFloat(numero2);
+        let resultado = "";
+
+        switch (operador) {
+          case "+": resultado = n1 + n2; break;
+          case "-": resultado = n1 - n2; break;
+          case "*": resultado = n1 * n2; break;
+          case "/": resultado = n2 !== 0 ? n1 / n2 : "Erro"; break;
+        }
+
+        numero1 = resultado.toString();
+        numero2 = "";
+        operador = "";
+        ponto1 = numero1.includes(".");
+        ponto2 = false;
+        operando = 1;
+        atualizarTela();
+      }
+
+      function limpar() {
+        numero1 = numero2 = operador = "";
+        ponto1 = ponto2 = false;
+        operando = 1;
+        atualizarTela();
+      }
+
+      function atualizarTela() {
+        mostrar.value = numero1 + (operador || "") + numero2;
+      }
+    };
+  </script>
+</head>
+<body>
+  <input type="text" id="mostra" readonly /><br />
+  <input type="button" id="btn-1" value="1" />
+  <input type="button" id="btn-2" value="2" />
+  <input type="button" id="btn-3" value="3" />
+  <br />
+  <input type="button" id="btn-4" value="4" />
+  <input type="button" id="btn-5" value="5" />
+  <input type="button" id="btn-6" value="6" />
+  <br />
+  <input type="button" id="btn-7" value="7" />
+  <input type="button" id="btn-8" value="8" />
+  <input type="button" id="btn-9" value="9" />
+  <br />
+  <input type="button" id="btn-0" value="0" />
+  <input type="button" id="btn-ponto" value="." />
+  <input type="button" id="btn-clear" value="C" />
+  <br />
+  <input type="button" id="btn-soma" value="+" />
+  <input type="button" id="btn-subtracao" value="-" />
+  <input type="button" id="btn-multiplicacao" value="*" />
+  <input type="button" id="btn-divisao" value="/" />
+  <input type="button" id="btn-resultado" value="=" />
+</body>
+</html>
